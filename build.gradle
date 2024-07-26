@@ -1,0 +1,78 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'pmd'
+    id 'jacoco'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+version "1.0.0"
+group 'com.paxa'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //implementation group: 'com.squareup.okhttp', name: 'okhttp', version: '2.7.4'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.11.0'
+    // implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.0.1'
+    // implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.0'
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
+
+    testImplementation group: 'com.squareup.okhttp3', name: 'mockwebserver', version: '4.11.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation('org.mockito:mockito-junit-jupiter:3.12.4')
+}
+//
+//sourceSets {
+//    main {
+//        java {
+//            srcDirs = ["src/main/java/"]
+//        }
+//    }
+//    test {
+//        java {
+//            srcDirs = ["src/test/java/"]
+//        }
+//    }
+//}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.paxa'
+            artifactId = 'compact_okhttp_logger'
+            version = '1.0.0'
+
+            from components.java
+        }
+    }
+}
+
+pmd {
+    consoleOutput = true
+    ruleSetFiles = files("${project.rootDir}/tools/pmd-rules.xml")
+    ruleSets = []
+}
+
+test {
+    useJUnitPlatform()
+    environment "APP_ENVIRONMENT", "test"
+    finalizedBy jacocoTestReport
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = false
+        html.required = true
+    }
+}

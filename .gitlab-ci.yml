@@ -1,0 +1,30 @@
+image: artifactory-gojek.golabs.io:6555/cx-java:latest
+
+variables:
+  GRADLE_USER_HOME: .gradle
+
+stages:
+  - build
+  - release
+
+cache:
+  paths:
+    - .gradle
+
+build:
+  stage: build
+  tags:
+    - service
+    - gopay
+  script:
+    - ./gradlew build
+
+release:
+  stage: release
+  script:
+    - ./gradlew jar -Pbuild_suffix="RELEASE" artifactoryPublish
+  tags:
+    - service
+    - gopay
+  only:
+    - master
